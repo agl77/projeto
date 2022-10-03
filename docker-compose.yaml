@@ -1,4 +1,4 @@
-version: "3.8"
+version: "3.3"
 
 services:
   mosquitto:
@@ -46,7 +46,7 @@ services:
       - ./grafana/fullchain.pem:/etc/grafana/fullchain.pem
       - ./grafana/privkey.pem:/etc/grafana/privkey.pem
       - ./grafana/grafana.ini:/etc/grafana/grafana.ini
-      - grafana-data:/var/lib/grafana
+      - ./grafana/dados:/var/lib/grafana
     depends_on:
       - influxdb
 
