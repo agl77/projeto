@@ -6,11 +6,14 @@ services:
     restart: always
     ports:
       - "1883:1883"
+      - "8884:8884"
       - "9001:9001"
     networks:
       - iot
     volumes:
       - ./mosquitto/mosquitto.conf:/mosquitto/config/mosquitto.conf
+      - ./mosquitto/mosquitto.log:/etc/mosquitto/mosquitto.log
+      - ./mosquitto/certs/:/etc/mosquitto/certs/
 
   
   influxdb:
@@ -53,6 +56,3 @@ services:
 networks:
   iot:
 
-volumes:
-  influxdb-data:
-  grafana-data:
