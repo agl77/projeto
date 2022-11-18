@@ -53,6 +53,30 @@ services:
     depends_on:
       - influxdb
 
+  postgres:
+    image: postgres
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-postgres}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-changeme}
+      PGDATA: /data/postgres
+    volumes:
+      - ../projeto_dados/postgres:/data/postgres
+    ports:
+      - "5432:5432"
+    networks:
+      - iot
+    restart: unless-stopped
+
+
+  python:
+    image: python
+    restart: always
+    command: pip install --upgrade pip && pip3 install paho-mqtt && pip3 install psycopg2
+    volumes: 
+      - ./scripts:/root/scripts
+    networks:
+      - iot
+
 networks:
   iot:
 
