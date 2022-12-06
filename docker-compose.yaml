@@ -14,6 +14,7 @@ services:
       - ./mosquitto/mosquitto.conf:/mosquitto/config/mosquitto.conf
       - ./mosquitto/mosquitto.log:/etc/mosquitto/mosquitto.log
       - ./mosquitto/certs/:/etc/mosquitto/certs/
+      - ./mosquitto/data:/mosquitto/data
 
   
   influxdb:
@@ -56,11 +57,17 @@ services:
   postgres:
     image: postgres
     environment:
-      POSTGRES_USER: ${POSTGRES_USER:-postgres}
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-changeme}
-      PGDATA: /data/postgres
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - PGDATA=/data/postgres
+      - APP_DB_USER=docker
+      - APP_DB_PASS=docker
+      - APP_DB_NAME=mqtt
+      - DB_HOST=postgres
+
+
     volumes:
-      - ../projeto_dados/postgres:/data/postgres
+      - ../projeto_dados/postgres:/var/lib/postgresql/data
     ports:
       - "5432:5432"
     networks:
@@ -68,14 +75,14 @@ services:
     restart: unless-stopped
 
 
-  python:
-    image: python
+  mqtt2psql:
+    image: python-psql-mqtt
     restart: always
-    command: pip install --upgrade pip && pip3 install paho-mqtt && pip3 install psycopg2
     volumes: 
-      - ./scripts:/root/scripts
+      - ./scripts/mqtt2psql:/app
     networks:
       - iot
+        #    RUN pip install --upgrade pip && pip3 install paho-mqtt && pip3 install psycopg2    
 
 networks:
   iot:
