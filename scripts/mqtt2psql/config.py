@@ -9,7 +9,7 @@ mqttPass = 'passmqtt'
 topic = "meliponarioReual"
 
 ## configs PGSQL
-DatabaseHostName = 'postgres'
+DatabaseHostName = '192.168.31.250'
 DatabaseUserName =  'postgres'
 DatabasePassword = 'postgres'
 DatabaseName = 'mqtt'

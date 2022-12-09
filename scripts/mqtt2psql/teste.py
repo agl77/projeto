@@ -7,8 +7,9 @@ from config import *
 client_id = f'python-mqtt-{random.randint(0, 100)}'
 # username = 'emqx'
 # password = 'public'
-topico = 'meliponarioReual/#'
-print (topico)
+
+
+print (topic)
 
 def connect_mqtt() -> mqtt_client:
     def on_connect(client, userdata, flags, rc):
