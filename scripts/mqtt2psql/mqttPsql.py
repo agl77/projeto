@@ -17,6 +17,13 @@ connection = psycopg2.connect(
 ## setup mqtt
 #client_source = mqtt.Client(deviceId)
 
+def insertIntoDatabase(message):
+	"Inserts the mqtt data into the database"
+	with connection.cursor() as cursor:
+		print("Inserting data: " + str(message.topic) + ";" + str(message.payload)[2:][:-1] + ";" + str(message.qos))
+		cursor.callproc('InsertIntoMQTTTable', [str(message.topic), str(message.payload)[2:][:-1], int(message.qos)])
+		connection.commit()
+
 def connect_mqtt():
     def on_connect(client, userdata, flags, rc):
         if rc == 0:
@@ -33,15 +40,18 @@ def connect_mqtt():
 def subscribe(client: mqtt_client):
     def on_message(client, userdata, msg):
         print(f"Received `{msg.payload.decode()}` from `{msg.topic}` topic")
+        insertIntoDatabase(msg)
 
     client.subscribe(topic + '/#')
     client.on_message = on_message
+	
 
 
 def run():
     client = connect_mqtt()
     subscribe(client)
     client.loop_forever()
+
 
 
 if __name__ == '__main__':

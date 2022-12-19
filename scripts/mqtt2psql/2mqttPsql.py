@@ -2,15 +2,15 @@ import paho.mqtt.client as mqtt_client
 import traceback
 import psycopg2
 import random
-from config import * 
+from config2 import * 
 client_mqtt = deviceId + f'-{random.randint(0, 1000)}'
 
-print("Connecting to database")
+print("Conectando ao banco de dados")
 connection = psycopg2.connect(
 	host = DatabaseHostName,
 	user = DatabaseUserName,
 	password = DatabasePassword,
-	database = DatabaseName,
+	database = 'mqtt',
 	port = DatabasePort
 )
 
@@ -41,8 +41,7 @@ def subscribe(client: mqtt_client):
     def on_message(client, userdata, msg):
         print(f"Received `{msg.payload.decode()}` from `{msg.topic}` topic")
         insertIntoDatabase(msg)
-
-    client.subscribe(topic + '/#')
+    client.subscribe(topic + '/leituras/#')
     client.on_message = on_message
 	
 

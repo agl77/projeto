@@ -1,30 +1,34 @@
+import paho.mqtt.client as mqtt_client
+import traceback
+import psycopg2
 import random
-
-from paho.mqtt import client as mqtt_client
 from config import * 
+client_mqtt = deviceId + f'-{random.randint(0, 1000)}'
 
-# generate client ID with pub prefix randomly
-client_id = f'python-mqtt-{random.randint(0, 100)}'
-# username = 'emqx'
-# password = 'public'
+print("Connecting to database")
+connection = psycopg2.connect(
+	host = DatabaseHostName,
+	user = DatabaseUserName,
+	password = DatabasePassword,
+	database = DatabaseName,
+	port = DatabasePort
+)
 
+## setup mqtt
+#client_source = mqtt.Client(deviceId)
 
-print (topic)
-
-def connect_mqtt() -> mqtt_client:
+def connect_mqtt():
     def on_connect(client, userdata, flags, rc):
         if rc == 0:
             print("Connected to MQTT Broker!")
         else:
             print("Failed to connect, return code %d\n", rc)
-
-    client = mqtt_client.Client(client_id)
-#    client.username_pw_set(username, password)
+    # Set Connecting Client ID
+    client = mqtt_client.Client(client_mqtt)
+    #client.username_pw_set(username, password)
     client.on_connect = on_connect
     client.connect(brokerAdd, brokerPort)
     return client
-    
-
 
 def subscribe(client: mqtt_client):
     def on_message(client, userdata, msg):
@@ -42,4 +46,3 @@ def run():
 
 if __name__ == '__main__':
     run()
-
