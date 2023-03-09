@@ -12,5 +12,5 @@ topic = "testando"
 DatabaseHostName = '192.168.31.250'
 DatabaseUserName =  'postgres'
 DatabasePassword = 'postgres'
-DatabaseName = 'mqtt'
+DatabaseName = 'MQTTbee'
 DatabasePort = 5432

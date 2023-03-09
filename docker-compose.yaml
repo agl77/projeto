@@ -54,25 +54,40 @@ services:
     depends_on:
       - influxdb
 
-  postgres:
+        #postgres:
+        #image: postgres
+        #environment:
+        #- POSTGRES_USER=postgres
+        #- POSTGRES_PASSWORD=postgres
+        #- PGDATA=/data/postgres
+        #- APP_DB_USER=docker
+        #- APP_DB_PASS=docker
+        #- APP_DB_NAME=mqtt
+        #- DB_HOST=postgres
+
+
+        #volumes:
+        #- ../projeto_dados/postgres:/var/lib/postgresql/data
+        #ports:
+        #- "5432:5432"
+        #networks:
+        #- iot
+        #restart: unless-stopped
+
+  postgresrv:
+    container_name: postgres-srv
     image: postgres
     environment:
+      - POSTGRES_DB=MQTTbee
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=postgres
-      - PGDATA=/data/postgres
-      - APP_DB_USER=docker
-      - APP_DB_PASS=docker
-      - APP_DB_NAME=mqtt
-      - DB_HOST=postgres
-
-
-    volumes:
-      - ../projeto_dados/postgres:/var/lib/postgresql/data
     ports:
       - "5432:5432"
+    volumes:
+      - ./postgres/data:/var/lib/postgresql/data
+    restart: always
     networks:
       - iot
-    restart: unless-stopped
 
 
   mqtt2psql:
