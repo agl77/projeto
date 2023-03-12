@@ -25,9 +25,11 @@ def insertIntoDatabase(message):
 		mensagemMQTT = chars_joined.split(";")     # Split string by comma
 		temperatura="INSERT INTO public.tbl_dado(id_dado, id_sensor, id_unidade, timestamp_dado, valor_dado) VALUES ((SELECT MAX(id_dado)+1 FROM public.tbl_dado), (SELECT id_sensor from tbl_sensor where nome_sensor='"+mensagemMQTT[0]+"'), 1, (to_timestamp("+mensagemMQTT[1]+")), "+mensagemMQTT[3]+");"
 		umidade="INSERT INTO public.tbl_dado(id_dado, id_sensor, id_unidade, timestamp_dado, valor_dado) VALUES ((SELECT MAX(id_dado)+1 FROM public.tbl_dado), (SELECT id_sensor from tbl_sensor where nome_sensor='"+mensagemMQTT[0]+"'), 2, (to_timestamp("+mensagemMQTT[1]+")), "+mensagemMQTT[5]+");"
-		cursor.execute(temperatura)
-		cursor.execute(umidade)
-		connection.commit()
+		print(temperatura)
+		print(umidade)
+#		cursor.execute(temperatura)
+#		cursor.execute(umidade)
+#		connection.commit()
 
 
 def connect_mqtt():
