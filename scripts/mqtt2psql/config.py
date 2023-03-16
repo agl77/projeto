@@ -6,11 +6,15 @@ brokerPort = 1883
 deviceId = 'mqtt2pgsql'
 mqttUsr = 'usermqtt'
 mqttPass = 'passmqtt'
-topic = "meliponarioReual"
+topic = "testando"
+## configurações da nuvem
+enderecoNuvem = 'btest.gp.utfpr.edu.br'
+portaNuvem = 8889
+topicoNuvem = 'meliponarioReual'
 
 ## configs PGSQL
 DatabaseHostName = '192.168.31.250'
 DatabaseUserName =  'postgres'
 DatabasePassword = 'postgres'
-DatabaseName = 'mqtt'
+DatabaseName = 'MQTTbee'
 DatabasePort = 5432

@@ -2,7 +2,7 @@ import paho.mqtt.client as mqtt_client
 import traceback
 import psycopg2
 import random
-from config2 import * 
+from config import * 
 client_mqtt = deviceId + f'-{random.randint(0, 1000)}'
 
 print("Conectando ao banco de dados")
