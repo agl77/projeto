@@ -6,7 +6,7 @@ brokerPort = 1883
 deviceId = 'mqtt2pgsql'
 mqttUsr = 'usermqtt'
 mqttPass = 'passmqtt'
-topic = "testando"
+topic = "reual"
 
 ## configs PGSQL
 DatabaseHostName = '192.168.31.250'

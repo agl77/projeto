@@ -23,13 +23,13 @@ def insertIntoDatabase(message):
 		characters = [chr(ascii) for ascii in message.payload] # Convert ASCII to char
 		chars_joined = ''.join(characters) # Join chars to a string
 		mensagemMQTT = chars_joined.split(";")     # Split string by comma
-		temperatura="INSERT INTO public.tbl_dado(id_dado, id_sensor, id_unidade, timestamp_dado, valor_dado) VALUES ((SELECT MAX(id_dado)+1 FROM public.tbl_dado), (SELECT id_sensor from tbl_sensor where nome_sensor='"+mensagemMQTT[0]+"'), 1, (to_timestamp("+mensagemMQTT[1]+")), "+mensagemMQTT[3]+");"
-		umidade="INSERT INTO public.tbl_dado(id_dado, id_sensor, id_unidade, timestamp_dado, valor_dado) VALUES ((SELECT MAX(id_dado)+1 FROM public.tbl_dado), (SELECT id_sensor from tbl_sensor where nome_sensor='"+mensagemMQTT[0]+"'), 2, (to_timestamp("+mensagemMQTT[1]+")), "+mensagemMQTT[5]+");"
+		temperatura="INSERT INTO public.tbl_dadotsta(id_dado, id_sensor, id_unidade, timestamp_dado, valor_dado) VALUES ((SELECT MAX(id_dado)+1 FROM public.tbl_dadotsta), (SELECT id_sensor from tbl_sensor where nome_sensor='"+mensagemMQTT[0]+"'), 1, (to_timestamp("+mensagemMQTT[1]+")), "+mensagemMQTT[3]+");"
+		umidade="INSERT INTO public.tbl_dadotsta(id_dado, id_sensor, id_unidade, timestamp_dado, valor_dado) VALUES ((SELECT MAX(id_dado)+1 FROM public.tbl_dadotsta), (SELECT id_sensor from tbl_sensor where nome_sensor='"+mensagemMQTT[0]+"'), 2, (to_timestamp("+mensagemMQTT[1]+")), "+mensagemMQTT[5]+");"
 		print(temperatura)
 		print(umidade)
-#		cursor.execute(temperatura)
-#		cursor.execute(umidade)
-#		connection.commit()
+		cursor.execute(temperatura)
+		cursor.execute(umidade)
+		connection.commit()
 
 
 def connect_mqtt():
@@ -49,8 +49,8 @@ def subscribe(client: mqtt_client):
     def on_message(client, userdata, msg):
         print(f"Received `{msg.payload.decode()}` from `{msg.topic}` topic")
         insertIntoDatabase(msg)
-    #client.subscribe(topic + '/leituras/#')
-    client.subscribe(topic + '/#')
+    client.subscribe(topic + '/sensores/#')
+    #client.subscribe(topic + '/#')
     client.on_message = on_message
 	
 

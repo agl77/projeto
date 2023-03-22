@@ -98,6 +98,16 @@ services:
       - iot
         #    RUN pip install --upgrade pip && pip3 install paho-mqtt && pip3 install psycopg2    
 
+  ntp: 
+    image: cturra/ntp:latest 
+    container_name: ntp 
+    restart: always 
+    ports: 
+      - 123:123/udp 
+    environment:  
+      - NTP_SERVERS=time.cloudflare.com 
+      - LOG_LEVEL=0
+
 networks:
   iot:
 
