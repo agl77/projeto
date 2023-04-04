@@ -24,8 +24,8 @@ def consultaBd(message):
         chars_joined = ''.join(characters) # Join chars to a string
         cursor.execute("SELECT MAX(id_dado) FROM Public.tbl_dado")
         maxId = cursor.fetchone()
-        print(chars_joined)
-        print(maxId[0])
+        print('Id Solicitado pela nuvem: '+str(chars_joined))
+        print('Maior Id no SGBD________: '+str(maxId[0]))
 
 #        if 'a'=='b':
         if int(chars_joined) < int(maxId[0]):
@@ -34,7 +34,7 @@ def consultaBd(message):
             tupla = tupla1[0]
             paraInserir = "%s;%s;%s;%s;%s" % (tupla[0],tupla[1],tupla[2],tupla[3],tupla[4])
             print(paraInserir)
-            client.publish(topicoNuvem+'/paraInserir',str(paraInserir))
+            client.publish(topicoNuvem+'/paraInserir',str(paraInserir), qos=2)
         else:
             print("Aguardando:")
             time.sleep(5)
@@ -45,7 +45,7 @@ def subscribe(client: mqtt_client):
         print(f"Received `{msg.payload.decode()}` from `{msg.topic}` topic")
         consultaBd(msg)
     #client.subscribe(topic + '/leituras/#')
-    client.subscribe(topicoNuvem+'/solicitaID')
+    client.subscribe(topicoNuvem+'/solicitaID', qos=2)
     client.on_message = on_message
 	
 

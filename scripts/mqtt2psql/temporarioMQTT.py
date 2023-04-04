@@ -8,12 +8,12 @@ def on_connect(client, userdata, flags, rc):
     # Subscribe here!
     client.subscribe("testando/sensores/")
 def on_message(client, userdata, msg):
-    print(f"Message received [{msg.topic}]: {msg.payload}")
+#    print(f"Message received [{msg.topic}]: {msg.payload}")
     characters = [chr(ascii) for ascii in msg.payload] # Convert ASCII to char
     chars_joined = ''.join(characters) # Join chars to a string
     mensagemMQTT = chars_joined.split(";")     # Split string by comma
     novamsg=mensagemMQTT[0]+";"+str((int(mensagemMQTT[1])+10800))+";"+mensagemMQTT[2]+";"+mensagemMQTT[3]+";"+mensagemMQTT[4]+";"+mensagemMQTT[5]
-    print (novamsg)
+#    print (novamsg)
     client.publish('reual/sensores', novamsg)
     
 

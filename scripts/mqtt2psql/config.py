@@ -6,7 +6,7 @@ brokerPort = 1883
 deviceId = 'mqtt2pgsql'
 mqttUsr = 'usermqtt'
 mqttPass = 'passmqtt'
-topic = "testando"
+topic = "reual"
 ## configurações da nuvem
 enderecoNuvem = 'btest.gp.utfpr.edu.br'
 portaNuvem = 8889
