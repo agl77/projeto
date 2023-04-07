@@ -16,28 +16,6 @@ services:
       - ./mosquitto/data:/mosquitto/data
 
   
-  influxdb:
-    image: influxdb:1.8
-    restart: always
-    ports:
-      - "8086:8086"
-    networks:
-      - iot
-    volumes:
-      - /root/projetoDados/influxdb/:/var/lib/influxdb/
-  
-  telegraf:
-    image: telegraf
-    restart: always
-    volumes:
-      - ./telegraf/telegraf.conf:/etc/telegraf/telegraf.conf
-
-    depends_on:
-      - mosquitto
-      - influxdb
-    networks:
-      - iot
-  
   grafana:
     image: grafana/grafana
     restart: always
@@ -50,28 +28,6 @@ services:
       - ./grafana/privkey.pem:/etc/grafana/privkey.pem
       - ./grafana/grafana.ini:/etc/grafana/grafana.ini
       - ./grafana/dados:/var/lib/grafana
-    depends_on:
-      - influxdb
-
-        #postgres:
-        #image: postgres
-        #environment:
-        #- POSTGRES_USER=postgres
-        #- POSTGRES_PASSWORD=postgres
-        #- PGDATA=/data/postgres
-        #- APP_DB_USER=docker
-        #- APP_DB_PASS=docker
-        #- APP_DB_NAME=mqtt
-        #- DB_HOST=postgres
-
-
-        #volumes:
-        #- ../projeto_dados/postgres:/var/lib/postgresql/data
-        #ports:
-        #- "5432:5432"
-        #networks:
-        #- iot
-        #restart: unless-stopped
 
   postgresrv:
     container_name: postgres-srv
@@ -88,16 +44,46 @@ services:
     networks:
       - iot
 
-
+## sistemas Python
   mqtt2psql:
     image: python-psql-mqtt
     restart: always
     volumes: 
       - ./scripts/mqtt2psql:/app
+    depends_on:
+      - postgresrv
+      - mosquitto
     networks:
       - iot
         #    RUN pip install --upgrade pip && pip3 install paho-mqtt && pip3 install psycopg2    
+  
+  painel:
+    build: scripts/painel/
+    restart: always
+    volumes:
+      - ./scripts/painel/:/app
+      - ./scripts/config.py:/app/config.py
+    networks:
+      - iot
+    depends_on:
+      - postgresrv
+      - mosquitto
 
+# sincroniza o BD local com a Nuvem
+  sincnuvem:
+    build: scripts/sincNuvem
+    restart: always
+    volumes:
+      - ./scripts/sincNuvem:/app
+      - ./scripts/config.py:/app/config.py
+    depends_on:
+      - postgresrv
+      - mosquitto
+
+    networks:
+      - iot
+
+  
   ntp: 
     image: cturra/ntp:latest 
     container_name: ntp 
