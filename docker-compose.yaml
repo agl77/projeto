@@ -96,4 +96,5 @@ services:
 
 networks:
   iot:
+    driver: bridge
 

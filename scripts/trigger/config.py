@@ -3,7 +3,7 @@
 # configurações MQTT
 brokerAdd = '192.168.31.250'
 brokerPort = 1883
-deviceId = 'trigAviso'
+deviceId = 'mqtt2pgsql'
 mqttUsr = 'usermqtt'
 mqttPass = 'passmqtt'
 topic = "reual"
@@ -13,7 +13,7 @@ portaNuvem = 8889
 topicoNuvem = 'meliponarioReual'
 
 ## configs PGSQL
-DatabaseHostName = '192.168.31.250'
+DatabaseHostName = 'postgres-srv'
 DatabaseUserName =  'postgres'
 DatabasePassword = 'postgres'
 DatabaseName = 'MQTTbee'

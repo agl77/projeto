@@ -1,60 +1,49 @@
+import json
 import paho.mqtt.client as mqtt_client
-#import traceback
 import psycopg2
 import random
 import time
-from config import * 
-client_mqtt = 'aviso' + deviceId + f'-{random.randint(0, 1000)}'
+from config import *
+
+client_mqtt = 'aviso' + deviceId + f'-{random.randint(0, 991000)}'
 client = mqtt_client.Client(client_mqtt)
 intervalo = 60
 
-
 print("Conectando ao banco de dados")
 connection = psycopg2.connect(
-	host = DatabaseHostName,
-	user = DatabaseUserName,
-	password = DatabasePassword,
-	database = 'MQTTbee',
-	port = DatabasePort
+    host=DatabaseHostName,
+    user=DatabaseUserName,
+    password=DatabasePassword,
+    database='MQTTbee',
+    port=DatabasePort
 )
-
 
 def consultaBd():
     with connection.cursor() as cursor:
-        cursor.execute("select id_sensor,id_unidade,valor_dado from tbl_dado order by id_dado desc limit 4")
+        cursor.execute("SELECT tbl_sensor.nome_sensor, tbl_unidade.simbolo_unidade, tbl_dado.valor_dado FROM tbl_dado INNER JOIN tbl_sensor ON tbl_sensor.id_sensor = tbl_dado.id_sensor INNER JOIN tbl_unidade ON tbl_unidade.id_unidade = tbl_dado.id_unidade ORDER BY tbl_dado.id_dado DESC LIMIT (SELECT max(id_sensor) FROM tbl_sensor) * (SELECT max(id_unidade) FROM tbl_unidade)")
         dados = cursor.fetchall()
-        ext_temp = 0
-        ext_umi = 0
-        cx1_temp = 0
-        cx1_umi = 0
-        for i in range (0,4):
-            if (dados[i][0])==1:
-                if ((dados[i][1]))==1:
-                    ext_temp=(dados[i][2])
-                elif ((dados[i][1]))==2:
-                    ext_umi=(dados[i][2])
-            if (dados[i][0])==2:
-                if ((dados[i][1]))==1:
-                    cx1_temp=(dados[i][2])
-                    print (cx1_temp)
-                elif ((dados[i][1]))==2:
-                    cx1_umi=(dados[i][2])
-        
-        informac=(f"{ext_temp};{ext_umi};{cx1_temp};{cx1_umi}")
-        
+        informac = {}
+        for dado in dados:
+            nome_sensor = dado[0]
+            simbolo_unidade = dado[1]
+            valor_dado = dado[2]
+            if nome_sensor not in informac:
+                informac[nome_sensor] = {}
+            if simbolo_unidade == 'C':
+                informac[nome_sensor]['tmp'] = valor_dado
+            else:
+                informac[nome_sensor][simbolo_unidade] = int(valor_dado)
         print('dados: ')
         print(dados)
-        print('apresentador/valores/'+str(informac))
+        print('apresentador/valores/' + json.dumps(informac))
         if client.is_connected():
-            client.publish(topic+'/apresentador/valores',str(informac), qos=1, retain=1)
+            client.publish(topic + '/apresentador/valores', json.dumps(informac), qos=1, retain=1)
             print('Publicado')
         else:
             client.connect(brokerAdd, brokerPort, keepalive=intervalo+10)
             print('conectando mqtt novamente')
-                    
 
 if __name__ == '__main__':
-    #client.loop_forever()
     client.connect(brokerAdd, brokerPort, keepalive=intervalo+10)
     client.loop_start()
     while True:
