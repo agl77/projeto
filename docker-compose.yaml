@@ -4,6 +4,7 @@ services:
   mosquitto:
     container_name: mosquitto-srv
     image: eclipse-mosquitto:latest
+    user: "0:0"
     restart: always
     ports:
       - "1883:1883"
